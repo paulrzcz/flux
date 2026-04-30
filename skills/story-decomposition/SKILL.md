@@ -140,14 +140,24 @@ Now create to logical breakdown based on all gathered information:
 
 ### Task Analysis Framework:
 
-#### Aspect-Based Decomposition:
-- **Backend/API Work**: Services, endpoints, business logic
+#### Jira Structure Compliance (AGENTS.md):
+**CRITICAL: Follow the organization's Jira structure:**
+- **Stories are decomposed into specific task blocks**: analysis, development, QA, and infrastructure
+- **Tasks are where the actual work is done**
+- **Stories and bugs are linked to custom issue type "Release 2.0"**
+- **Epics are used for Objectives and Key Results of the quarter**
+- **Bugs typically don't have decomposition**
+
+#### Aspect-Based Decomposition with Block Structure:
+- **Analysis Block**: Requirements analysis, technical specifications, investigation
+- **Development Block**: Core implementation work (backend, frontend, database)
+- **QA Block**: Testing, validation, quality assurance
+- **Infrastructure Block**: Deployment, configuration, monitoring
 - **Frontend/UI Work**: Components, views, user interactions
+- **Backend/API Work**: Services, endpoints, business logic
 - **Database/Data Work**: Schemas, migrations, data processing
 - **Integration Work**: Third-party services, APIs, messaging
-- **Testing Work**: Unit tests, integration tests, E2E tests
 - **Documentation Work**: Technical docs, user guides, API docs
-- **Infrastructure/DevOps**: Deployments, configuration, monitoring
 
 #### Size and Granularity:
 - Target 3-10 tasks per story (avoid over-granularity)
@@ -226,14 +236,27 @@ Based on the story and [X] Confluence pages:
 
 ### Proposed Task Breakdown (X tasks):
 
-**Implementation Tasks:**
-1. [Story] Design and implement [feature] database schema
-2. [Task] Create [feature] API endpoints with authentication
-3. [Story] Build [feature] UI components with validation
-4. [Task] Integrate [service] for [feature] functionality
-5. [Task] Add error handling and logging for [feature]
-6. [Story] Write unit and integration tests for [feature]
-7. [Task] Update documentation and deployment guides
+**Implementation Tasks (by work blocks):**
+
+**Analysis Block:**
+1. [Task] Analyze [feature] requirements and create technical specifications
+2. [Task] Investigate existing codebase and identify integration points
+
+**Development Block:**  
+3. [Story] Design and implement [feature] database schema
+4. [Story] Create [feature] API endpoints with authentication
+5. [Story] Build [feature] UI components with validation
+6. [Task] Integrate [service] for [feature] functionality
+7. [Task] Add error handling and logging for [feature]
+
+**QA Block:**
+8. [Task] Write unit and integration tests for [feature]
+9. [Task] Perform end-to-end testing and validation
+10. [Task] Conduct performance and regression testing
+
+**Infrastructure Block:**
+11. [Task] Update documentation and deployment guides
+12. [Task] Configure monitoring and alerting for [feature]
 
 **Dependencies:**
 - Tasks 2-3 depend on task 1 (database schema)
@@ -294,6 +317,7 @@ This task is part of the decomposition of [PROJECT]-[NUMBER] - [Original Story T
 [Key requirement 3]
 
 ## Task Details
+**Block Type:** [ANALYSIS/DEVELOPMENT/QA/INFRASTRUCTURE]
 **This task specifically covers:**
 - [Specific implementation details]
 - [Technical approach]
@@ -318,11 +342,14 @@ This task is part of the decomposition of [PROJECT]-[NUMBER] - [Original Story T
 - [ ] Documentation updated
 
 ## Notes
+- This task is part of the [BLOCK] work block for this story
 - This task was auto-generated from story decomposition
 - Dependencies: [list any task dependencies]
 - Related files: [relevant file paths]
+- Will be linked to Release 2.0 as part of story completion
 
 **Related Story:** [PROJECT]-[NUMBER]
+**Release:** Release 2.0
 ```
 
 ### Link Tasks to Original Story:
@@ -336,10 +363,27 @@ createIssueLink(
 )
 ```
 
+### Link Story to Release 2.0:
+**IMPORTANT: After task creation, ensure the original story is linked to Release 2.0**
+```
+createIssueLink(
+  cloudId="...",
+  inwardIssueKey="[ORIGINAL_STORY_KEY]",
+  outwardIssueKey="[RELEASE_2_0_KEY]",
+  linkTypeName="relates to"
+)
+```
+
+If the story is not already linked to Release 2.0, notify the user:
+```
+I notice this story is not linked to Release 2.0. According to your organization's structure, stories should be linked to Release 2.0. Would you like me to create this link?
+```
+
 ### Track Created Tasks:
 Maintain a list of all created tasks for the summary:
 - Task key and summary
 - Issue type
+- Work block (ANALYSIS/DEVELOPMENT/QA/INFRASTRUCTURE)
 - Creation status (success/failure)
 - Link status (created/failed)
 
@@ -388,6 +432,98 @@ https://[site].atlassian.net/browse/[PROJECT]-[NUMBER]
 4. Prioritize tasks within the story
 5. Start implementation work
 ```
+
+---
+
+## Example Implementations (Using Organization's Jira Structure)
+
+### Example 1: Simple Feature Story
+**Story**: "As a user, I want to reset my password so that I can regain access to my account"
+
+**Analysis Results:**
+- Requirements: Password reset with email verification
+- Code Context: Found AuthController, UserService, EmailService
+- Current Pattern: JWT tokens, bcrypt hashing
+
+**Proposed Tasks (by work block):**
+
+**Analysis Block:**
+1. [Task] Analyze password reset requirements and security implications
+2. [Task] Research existing authentication patterns and token handling
+
+**Development Block:**
+3. [Story] Create password reset API endpoint with secure token generation
+4. [Task] Implement email service for reset link delivery
+5. [Story] Build password reset form UI with validation
+6. [Task] Add token validation logic and security measures
+
+**QA Block:**
+7. [Task] Write security tests for token generation and validation
+8. [Task] Perform end-to-end testing of password reset flow
+9. [Task] Test edge cases (expired tokens, invalid emails)
+
+**Infrastructure Block:**
+10. [Task] Update security documentation with password reset process
+
+### Example 2: Technical Improvement Story
+**Story**: "Improve dashboard loading performance by implementing caching"
+
+**Analysis Results:**
+- Requirements: Reduce load time from 5s to <1s
+- Code Context: DashboardController, slow database queries
+- Current Pattern: Direct database queries on each request
+
+**Proposed Tasks (by work block):**
+
+**Analysis Block:**
+1. [Task] Profile current dashboard performance and identify bottlenecks
+2. [Task] Evaluate caching strategies (Redis, Memcached, application-level)
+
+**Development Block:**
+3. [Task] Implement Redis caching infrastructure
+4. [Story] Refactor dashboard queries to use cache
+5. [Task] Add cache invalidation logic for data updates
+6. [Task] Implement cache warming strategies
+
+**QA Block:**
+7. [Task] Write performance tests for cached dashboard
+8. [Task] Validate cache consistency and data accuracy
+9. [Task] Test cache failure scenarios and fallback behavior
+
+**Infrastructure Block:**
+10. [Task] Configure monitoring for cache hit rates and performance
+
+### Example 3: Integration Story
+**Story**: "Integrate Stripe payment processing for subscription plans"
+
+**Analysis Results:**
+- Requirements: Stripe integration for recurring payments
+- Code Context: PaymentService, SubscriptionController, existing PayPal integration
+- Current Pattern: Payment provider abstraction
+
+**Proposed Tasks (by work block):**
+
+**Analysis Block:**
+1. [Task] Analyze Stripe API and compare with current PayPal implementation
+2. [Task] Research PCI compliance requirements for payment processing
+3. [Task] Design payment provider abstraction for multiple providers
+
+**Development Block:**
+4. [Task] Add Stripe SDK to project dependencies
+5. [Story] Implement Stripe payment service with subscription handling
+6. [Story] Create Stripe webhook endpoint for payment events
+7. [Story] Build subscription management UI components
+8. [Task] Add error handling for payment failures and retries
+
+**QA Block:**
+9. [Task] Write comprehensive tests for payment flows
+10. [Task] Perform security testing for payment data handling
+11. [Task] Test subscription lifecycle scenarios
+
+**Infrastructure Block:**
+12. [Task] Update documentation with Stripe integration process
+13. [Task] Configure monitoring for payment processing errors
+
 ---
 
 ## Final Notes
